@@ -19,12 +19,15 @@ def isParetoImprovement(agents: list[Agent], option1: int, option2: int) -> bool
     :return: True if the option1 is better than option2, otherwise return False
     """
     same = True
+    agent_values = 0
     for agent in agents:
         if agent.value(option1) < agent.value(option2):
             return False
-        elif agent.value(option1) > agent.value(option2):
-            same = False
-    return same.__eq__(False)
+        elif agent.value(option1) == agent.value(option2):
+            agent_values = agent_values+1
+    if agent_values == len(agents):
+        return False
+    return True
 
 
 def isParetoOptimal(agents: list[Agent], option: int, options: list[int]) -> bool:
@@ -36,8 +39,8 @@ def isParetoOptimal(agents: list[Agent], option: int, options: list[int]) -> boo
     :return: True if the option is better than all other options, otherwise return False
     """
     for op in options:
-        if option is not op:
-            if isParetoImprovement(agents, option, op) is False:
+        if option != op:
+            if isParetoImprovement(agents, op, option) is True:
                 return False
     return True
 
