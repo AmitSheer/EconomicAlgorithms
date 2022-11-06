@@ -23,10 +23,13 @@ def isParetoImprovement(agents: list[Agent], option1: int, option2: int) -> bool
     for agent in agents:
         if agent.value(option1) < agent.value(option2):
             return False
+    # this addition to handle cases where the two option are the same so they
+    # aren't any better than the other ones
         elif agent.value(option1) == agent.value(option2):
             agent_values = agent_values+1
     if agent_values == len(agents):
         return False
+    # end of addition
     return True
 
 
