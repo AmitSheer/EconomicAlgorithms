@@ -31,14 +31,14 @@ def webster():
     printer(new_mandates)
 
 
-def get_changes(new_mandates):
+def get_changes(new_mandates, old_mandates):
     benefited_parties = []
     at_loss_parties = []
     no_change_parties = []
     for i in range(len(parties)):
-        if new_mandates[i] > mandates[i]:
+        if new_mandates[i] > old_mandates[i]:
             benefited_parties.append(parties[i])
-        elif new_mandates[i] < mandates[i]:
+        elif new_mandates[i] < old_mandates[i]:
             at_loss_parties.append(parties[i])
         else:
             no_change_parties.append(parties[i])
@@ -48,7 +48,7 @@ def get_changes(new_mandates):
 def printer(new_mandates):
     # new_mandates = func()
     print(f'{new_mandates}')
-    benefited_parties, at_loss_parties, no_change_parties = get_changes(new_mandates)
+    benefited_parties, at_loss_parties, no_change_parties = get_changes(new_mandates, mandates)
     print(f'benefited parties: {benefited_parties}')
     print(f'at loss parties: {at_loss_parties}')
     print(f'no change parties: {no_change_parties}')
@@ -57,11 +57,14 @@ def printer(new_mandates):
 def with_change():
     flag = True
     y = 1
+    base_mandates = get_mandates(y)
+    print(f'base mandates divided without leftover law: {base_mandates}')
+
     while flag:
         man = get_mandates(y)
-        bp, alp, ncp = get_changes(man)
-        if ncp != 10:
-            print(f'max-min y for change   : {y}\n'
+        bp, alp, ncp = get_changes(man, base_mandates)
+        if len(ncp) != 10:
+            print(f'max-min y for change   : {round(y, 3)}\n'
                   f'this is the new mandate: {man}\n'
                   f'this is the parties    : {parties}')
             flag = False
