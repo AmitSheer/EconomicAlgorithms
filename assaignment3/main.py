@@ -8,10 +8,23 @@ total_mandates = 120
 
 
 def f(s, divider):
+    """
+    basic formula
+    :param s: amount of mandates
+    :param divider: the influencing amount
+    :return:
+    """
     return s + divider
 
 
 def calc(n_seats: [int], func, func_val):
+    """
+    find the party that has the highest value to get the mandate
+    :param n_seats: num of mandates
+    :param func:  the function to use for the calculation
+    :param func_val: the value for the specific function
+    :return:
+    """
     curr_votes = []
     for i in range(len(parties)):
         curr_votes.append(votes[i] / func(n_seats[i], func_val))
@@ -27,11 +40,21 @@ def get_mandates(func_val):
 
 
 def webster():
+    """
+    implements the Webster Function
+    :return:
+    """
     new_mandates = get_mandates(0.5)
     printer(new_mandates)
 
 
 def get_changes(new_mandates, old_mandates):
+    """
+    finds if there is any change between the old divide of the mandates to the new one
+    :param new_mandates: mandate divide
+    :param old_mandates: mandate divide
+    :return:
+    """
     benefited_parties = []
     at_loss_parties = []
     no_change_parties = []
@@ -46,6 +69,11 @@ def get_changes(new_mandates, old_mandates):
 
 
 def printer(new_mandates):
+    """
+    prettify print of the results of the run
+    :param new_mandates:
+    :return:
+    """
     # new_mandates = func()
     print(f'{new_mandates}')
     benefited_parties, at_loss_parties, no_change_parties = get_changes(new_mandates, mandates)
@@ -55,18 +83,28 @@ def printer(new_mandates):
 
 
 def with_change():
+    """
+    finds the y for which the base mandate divide is changed
+    :return:
+    """
     flag = True
     y = 1
+    # get base mandate without leftover law
     base_mandates = get_mandates(y)
     print(f'base mandates divided without leftover law: {base_mandates}')
-
+    # run this loop until the divide changes and print the results of  the run
     while flag:
         man = get_mandates(y)
         bp, alp, ncp = get_changes(man, base_mandates)
+        # check if the mandates
         if len(ncp) != 10:
-            print(f'max-min y for change   : {round(y, 3)}\n'
-                  f'this is the new mandate: {man}\n'
-                  f'this is the parties    : {parties}')
+            print(
+                # the y for which the results changed
+                f'max-min y for change   : {round(y, 3)}\n'
+                # the new mandate spread
+                f'this is the new mandate: {man}\n'
+                # the correlating parties of the spread
+                f'this is the parties    : {parties}')
             flag = False
         else:
             y = y + 0.001
