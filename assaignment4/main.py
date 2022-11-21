@@ -1,6 +1,3 @@
-import random
-
-
 def is_optimal(v, value_m) -> bool:
     """
     checks if current state is a proportional divide of values
@@ -45,9 +42,10 @@ def get_path(tree_stack, curr):
 
 
 # ------------------------ Q1 ------------------------------
-def dfs_optimal_search(value_m: list[list]) -> list:
+def dfs_optimal_search(value_m: list[list], pruning: bool = False) -> list:
     v = [0, 0, 0, 0]
     tree_stack = [v]
+    number_of_states = 1
     all_states = dict()
     while len(tree_stack) > 0:
         v = tree_stack.pop()
@@ -57,7 +55,8 @@ def dfs_optimal_search(value_m: list[list]) -> list:
                 path = get_path(tree_stack, v)
                 path.append(v[len(v) - 1] + 1)
                 path.reverse()
-                print(all_states)
+                # print(all_states)
+                print(f'number of states calculated when pruning was: {pruning}, num of states: {number_of_states}')
                 return path
         elif v[3] < len(value_m) and v[0] < len(value_m[0]):
             new_v = [v[0], v[1], v[2], 0]
@@ -73,10 +72,13 @@ def dfs_optimal_search(value_m: list[list]) -> list:
             new_v[0] = new_v[0] + 1
             # reset visit count
             new_v[3] = 0
+            number_of_states = number_of_states + 1
             # tree_stack.append(new_v)
-            if remove_duplicate_states(all_states, new_v) is False:
+            if pruning is False:
                 tree_stack.append(new_v)
-    return []
+            elif remove_duplicate_states(all_states, new_v) is False:
+                tree_stack.append(new_v)
+    print(f'number of states calculated when pruning was: {pruning}, num of states: {number_of_states}')
 
 
 # ------------------------ Q2 ------------------------------
@@ -91,11 +93,11 @@ def remove_duplicate_states(states: dict[int, set], curr: list):
     if states.keys().__contains__(curr[0]):
         # if div already calculated from in different branch then stop the calculation
         if states.get(curr[0]).__contains__(tuple(curr[1:len(curr) - 1])):
-            print(f'same curr:{curr}')
+            # print(f'state already calculated for this branch curr:{curr}')
             return True
         else:
             # this is a new unique state for this item divide add to divide
-            print(f'not in set curr:{curr}')
+            # print(f'not in set curr:{curr}')
             states.get(curr[0]).add(tuple(curr[1:len(curr) - 1]))
     else:
         # create new key in dictionary
@@ -106,7 +108,21 @@ def remove_duplicate_states(states: dict[int, set], curr: list):
 
 if __name__ == '__main__':
     value_matrix = [
-        [11, 22, 33, 44, 55],
-        [11, 22, 33, 44, 66]
+        [11, 11, 11, 11, 11, 11, 11, 11],
+        [11, 11, 11, 11, 11, 11, 11, 11],
+        # [11, 22, 33, 44, 66]
     ]
+    print(value_matrix)
+
     print(dfs_optimal_search(value_matrix))
+    print(dfs_optimal_search(value_matrix, True))
+
+    print('-------------------------------------------------------------------------------------------')
+    value_matrix = [
+        [11, 22, 33, 44, 55, 66, 77, 88],
+        [11, 22, 33, 44, 55, 66, 77, 88],
+        # [11, 22, 33, 44, 66]
+    ]
+    print(value_matrix)
+    print(dfs_optimal_search(value_matrix))
+    print(dfs_optimal_search(value_matrix, True))
