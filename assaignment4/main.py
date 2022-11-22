@@ -1,6 +1,19 @@
+
+
 def is_optimal(v, value_m) -> bool:
     """
     checks if current state is a proportional divide of values
+
+    >>> v = [3, 11, 11]
+    >>> value_m = [[11,11],[11,11]]
+    >>> is_optimal(v,  value_m)
+    True
+
+    >>> v = [3, 14, 11]
+    >>> value_m = [[11,11],[11,14]]
+    >>> is_optimal(v,  value_m)
+    False
+
     :param v: current state
     :param value_m: value matrix
     :return:
@@ -15,6 +28,11 @@ def is_optimal(v, value_m) -> bool:
 
 def check_change(curr, prev):
     """
+    >>> curr = [2,1,3,3]
+    >>> prev = [2,1,2,3]
+    >>> check_change(curr, prev)
+    2
+
     checks which player value changed and return the index
     :param curr:
     :param prev:
@@ -28,6 +46,16 @@ def check_change(curr, prev):
 def get_path(tree_stack, curr):
     """
     traverses stack to build divide path of items to players
+
+    >>> tree_stack = []
+    >>> tree_stack.append([0,0,0,0])
+    >>> tree_stack.append([1,11,0,0])
+    >>> curr = [2,11,11,0]
+    >>> get_path(tree_stack, curr)
+    [2]
+
+    returned the path from current to the top without current
+
     :param tree_stack:
     :param curr: current leaf
     :return:
@@ -43,6 +71,30 @@ def get_path(tree_stack, curr):
 
 # ------------------------ Q1 ------------------------------
 def dfs_optimal_search(value_m: list[list], pruning: bool = False) -> list:
+    """
+    lets use a simple matrix for this solution
+    this will give us the best way to divide the items
+    >>> dfs_optimal_search([[11, 11, 11, 11, 11, 11, 11, 11],[11, 11, 11, 11, 11, 11, 11, 11]])
+    number of states calculated when pruning was: False, num of states: 35
+    [1, 1, 1, 1, 2, 2, 2, 2]
+
+
+    this will give us best way to divide items with the number of states it calculated we can see that the number
+    is indeed different by almost 10 to the first search without the pruning
+    >>> dfs_optimal_search([[11, 11, 11, 11, 11, 11, 11, 11],[11, 11, 11, 11, 11, 11, 11, 11]], True)
+    number of states calculated when pruning was: True, num of states: 25
+    [1, 1, 1, 1, 2, 2, 2, 2]
+
+    more examples:
+    >>> dfs_optimal_search([[11, 22, 33, 44, 55, 66, 77, 88], [11, 22, 33, 44, 55, 66, 77, 88]])
+    number of states calculated when pruning was: False, num of states: 34
+    [1, 1, 1, 1, 2, 2, 2, 1]
+
+
+    >>> dfs_optimal_search([[11, 22, 33, 44, 55, 66, 77, 88], [11, 22, 33, 44, 55, 66, 77, 88]], True)
+    number of states calculated when pruning was: True, num of states: 34
+    [1, 1, 1, 1, 2, 2, 2, 1]
+    """
     v = [0, 0, 0, 0]
     tree_stack = [v]
     number_of_states = 1
@@ -84,6 +136,27 @@ def dfs_optimal_search(value_m: list[list], pruning: bool = False) -> list:
 # ------------------------ Q2 ------------------------------
 def remove_duplicate_states(states: dict[int, set], curr: list):
     """
+    check that state isnt in a given states list
+    >>> states = {1: set(),0: set()}
+    >>> states[1].add(tuple([0, 0]))
+    >>> states[0].add(tuple([0, 0]))
+    >>> remove_duplicate_states(states, [0, 0, 1, 0])
+    False
+
+
+    add a new item number state classifier
+    >>> states = {1: set()}
+    >>> states[1].add(tuple([0, 0]))
+    >>> remove_duplicate_states(states, [0, 0, 1, 0])
+    False
+
+
+    >>> states = {1: set(),0: set()}
+    >>> states[1].add(tuple([0, 0]))
+    >>> states[0].add(tuple([0, 0]))
+    >>> remove_duplicate_states(states, [0, 0, 0, 0])
+    True
+
     check if a state was already visited
     :param states: all unique states
     :param curr:
@@ -107,22 +180,5 @@ def remove_duplicate_states(states: dict[int, set], curr: list):
 
 
 if __name__ == '__main__':
-    value_matrix = [
-        [11, 11, 11, 11, 11, 11, 11, 11],
-        [11, 11, 11, 11, 11, 11, 11, 11],
-        # [11, 22, 33, 44, 66]
-    ]
-    print(value_matrix)
-
-    print(dfs_optimal_search(value_matrix))
-    print(dfs_optimal_search(value_matrix, True))
-
-    print('-------------------------------------------------------------------------------------------')
-    value_matrix = [
-        [11, 22, 33, 44, 55, 66, 77, 88],
-        [11, 22, 33, 44, 55, 66, 77, 88],
-        # [11, 22, 33, 44, 66]
-    ]
-    print(value_matrix)
-    print(dfs_optimal_search(value_matrix))
-    print(dfs_optimal_search(value_matrix, True))
+    import doctest
+    doctest.testmod()
