@@ -42,9 +42,19 @@ def final_strongly_connected_componenets(g: nx.DiGraph, owner_arr: List[str]):
             if type(comp[0]) == int and type(comp[1]) == str:
                 if owner_arr[comp[0]] == comp[1]:
                     flag = False
+                else:
+                    raise Exception(f'There seems to be a problem with the graph: {g} \n and owner array: {owner_arr},'
+                                    f'please contact the maintainer of this codebase at: https://github.com/AmitSheer '
+                                    f'for more direction')
             elif type(comp[0]) == str and type(comp[1]) == int:
                 if owner_arr[comp[1]] == comp[0]:
                     flag = False
+                else:
+                    raise Exception(f'There seems to be a problem with the graph: {g} \n and owner array: {owner_arr},'
+                                    f'please contact the maintainer of this codebase at: https://github.com/AmitSheer '
+                                    f'for more direction')
+            elif type(comp[0]) == str and type(comp[1]) == str or type(comp[0]) == int and type(comp[1]) == int:
+                flag = False
         else:
             for node in component:
                 edges_id = [y for x, y in g.edges(node)]
