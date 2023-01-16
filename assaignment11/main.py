@@ -1,6 +1,5 @@
 from typing import List
 
-import matplotlib.pyplot
 import networkx as nx
 
 
@@ -16,22 +15,21 @@ def build_graph(valuations: List[List[int]]) -> nx.DiGraph:
     return g
 
 
-def final_strongly_connected_componenets(g: nx.DiGraph):
+def final_strongly_connected_componenets(g: nx.DiGraph, owner_arr: List[str]):
     """
     >>> valuations = [[1, 0, 7, 0, 0, 0], [7, 7, 0, 7, 0, 0], [0, 0, 7, 0, 7, 0],[0, 0, 7, 0, 0, 0], [7, 0, 0, 0, 0, 7],[0, 7, 0, 0, 0, 0]]
     >>> D = build_graph(valuations)
-    >>> print(final_strongly_connected_componenets(D))
+    >>> print(final_strongly_connected_componenets(D,['0','1','2','3','4','5']))
     True
 
 
 
     >>> valuations1 = [[1, 0, 0, 0, 0, 0], [0, 7, 0, 0, 0, 0], [0, 0, 7, 0, 0, 0],[0, 0, 0, 7, 0, 0], [0, 0, 0, 0, 7, 0],[0, 0, 0, 0, 0, 7]]
     >>> D2 = build_graph(valuations1)
-    >>> print(final_strongly_connected_componenets(D2))
+    >>> print(final_strongly_connected_componenets(D2, ['0','1','2','3','4','5']))
     False
     """
     strongly_connected_componenets = nx.strongly_connected_components(g)
-    components_are_final: List[bool] = []
     # component_final = None
     flag = True
     # check each component
@@ -42,10 +40,10 @@ def final_strongly_connected_componenets(g: nx.DiGraph):
         if component.__len__() == 2:
             comp = [x for x in component]
             if type(comp[0]) == int and type(comp[1]) == str:
-                if f'{comp[0]}' == comp[1]:
+                if owner_arr[comp[0]] == comp[1]:
                     flag = False
             elif type(comp[0]) == str and type(comp[1]) == int:
-                if f'{comp[1]}' == comp[0]:
+                if owner_arr[comp[1]] == comp[0]:
                     flag = False
         else:
             for node in component:
@@ -56,14 +54,13 @@ def final_strongly_connected_componenets(g: nx.DiGraph):
                         flag = False
                         break
                 if type(node) == int:
-                    if edges_id.__contains__(f'{node}') is False:
+                    if edges_id.__contains__(owner_arr[node]) is False:
                         flag = False
                         break
-        components_are_final.append(flag)
-        # if flag:
-        #     component_final = component
+        if flag:
+            return True
         flag = True
-    return components_are_final.__contains__(True)
+    return False
 
 
 if __name__ == '__main__':
